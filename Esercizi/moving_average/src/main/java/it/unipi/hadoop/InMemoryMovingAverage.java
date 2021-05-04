@@ -1,7 +1,7 @@
 package it.unipi.hadoop;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
@@ -17,38 +17,38 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class InMemoryMovingAverage
 {
-    public static class NewMapper extends Mapper<Object, Text, Text, TimeSeriesData>
+    public static class MovingAverageMapper extends Mapper<Object, Text, Text, TimeSeriesData>
     {
         private final static TimeSeriesData tsd = new TimeSeriesData();
         private final Text name = new Text();
 
         public void map(final Object key, final Text value, final Context context)
                 throws IOException, InterruptedException {
-            String[] splittedRow = value.toString().split(",");
+            String[] splitRow = value.toString().split(",");
             // [0] -> name, [1] -> date, [2] -> value
 
-            name.set(splittedRow[0]);
-            Date date = new Date(splittedRow[1]);
+            name.set(splitRow[0]);
+            Date date = DateUtil.getDate(splitRow[1]);
+            assert date != null;
             tsd.setTimestamp(date.getTime());
-            tsd.setValue(Double.parseDouble(splittedRow[2]));
+            tsd.setValue(Double.parseDouble(splitRow[2]));
 
             context.write(name, tsd);
 
         }
     }
 
-    public static class NewReducer extends Reducer<Text, TimeSeriesData, Text, Text> {
-        private final int windowSize = 4;
+    public static class MovingAverageReducer extends Reducer<Text, TimeSeriesData, Text, Text> {
 
         public void reduce(final Text key, final Iterable<TimeSeriesData> values, final Context context)
                 throws IOException, InterruptedException {
 
             /*
             values--   Google,tsd       Gooogle,tsd    Gooogle, tsd
-            testData =tsd.getValue(,) tsd.getValue....
-
+            testData =tsd.getValue() tsd.getValue....
              */
-            ArrayList testData = new ArrayList<TimeSeriesData>();
+
+            List<TimeSeriesData> testData = new ArrayList<>();
             for (final TimeSeriesData val : values) {
                 testData.add(new TimeSeriesData(val.getValue(),val.getTimestamp()));
             }
@@ -56,24 +56,21 @@ public class InMemoryMovingAverage
             Collections.sort(testData); // [0] il piú recente
 
             double sum = 0;
+            int windowSize = 4;
             for (int i = 0; i < windowSize - 1; i++) {
-                sum += ((TimeSeriesData)testData.get(i)).getValue();
+                sum += testData.get(i).getValue();
             }
 
             Text result = new Text();
 
             for (int i = windowSize - 1; i < testData.size(); i++ ) {
-                sum += ((TimeSeriesData)testData.get(i)).getValue();
-                double moving_average = sum/windowSize;
+                sum += testData.get(i).getValue();
+                double moving_average = sum/ windowSize;
 
-                Date date = new Date(((TimeSeriesData) testData.get(i)).getTimestamp());
-                result.set(date.toString() + ", " + moving_average);
+                result.set( DateUtil.getDateAsString(testData.get(i).getTimestamp()) + ", " + moving_average );
                 context.write(key, result);
 
-                // windowSize = 4, index = 4, togliere 0,  5 - 4
-                // index = 6, togliere 2
-                // index = 7, togliere 3
-                sum -= ((TimeSeriesData)testData.get(i - windowSize + 1)).getValue();
+                sum -= testData.get(i - windowSize + 1).getValue();
             }
         }
     }
@@ -84,10 +81,10 @@ public class InMemoryMovingAverage
         job.setJarByClass(InMemoryMovingAverage.class);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
 
-        job.setMapperClass(NewMapper.class);
-        job.setReducerClass(NewReducer.class);
+        job.setMapperClass(MovingAverageMapper.class);
+        job.setReducerClass(MovingAverageReducer.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
