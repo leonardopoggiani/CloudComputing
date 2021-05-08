@@ -7,22 +7,25 @@ import java.util.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 
 public class InMemoryMovingAverage
 {
-    public static class MovingAverageMapper extends Mapper<Object, Text, Text, TimeSeriesData>
+    public static class MovingAverageMapper extends Mapper<LongWritable, Text, Text, TimeSeriesData>
     {
         private final static TimeSeriesData tsd = new TimeSeriesData();
         private final Text name = new Text();
 
-        public void map(final Object key, final Text value, final Context context)
+        public void map(final LongWritable key, final Text value, final Context context)
                 throws IOException, InterruptedException {
             String[] splitRow = value.toString().split(",");
             // [0] -> name, [1] -> date, [2] -> value
@@ -56,7 +59,7 @@ public class InMemoryMovingAverage
             Collections.sort(testData); // [0] il piú recente
 
             double sum = 0;
-            int windowSize = 4;
+            int windowSize = 2;
             for (int i = 0; i < windowSize - 1; i++) {
                 sum += testData.get(i).getValue();
             }
@@ -77,14 +80,21 @@ public class InMemoryMovingAverage
 
     public static void main(final String[] args) throws Exception {
         final Configuration conf = new Configuration();
-        final Job job = new Job(conf, "moving_average");
+        final Job job = Job.getInstance(conf, "InMemoryMovingAverage");
         job.setJarByClass(InMemoryMovingAverage.class);
+
+        // define mapper's output key-value
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(TimeSeriesData.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
         job.setMapperClass(MovingAverageMapper.class);
         job.setReducerClass(MovingAverageReducer.class);
+
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
