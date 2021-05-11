@@ -20,9 +20,19 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class MatrixMultiplication
 {
-    public static class MatrixMultiplicationMapper extends Mapper<LongWritable, Text, Text, TimeSeriesData> {
+    public static class MatrixMultiplicationMapper extends Mapper<LongWritable, Text, Text, Text> {
+
+        private final static Text mapperKey = new Text();
+        private final static Text reducerKey = new Text();
+
         public void map(final LongWritable key, final Text value, final Context context)
                 throws IOException, InterruptedException {
+            String[] splittedRow = value.toString().split(",");
+            // [0] -> nome matrice, [1] -> numero riga (i), [2] -> numero colonna (j), [3] -> valore
+            mapperKey.set(splittedRow[1] + "," + splittedRow[2]);
+            reducerKey.set(splittedRow[3]);
+
+            context.write(mapperKey, reducerKey);
         }
     }
 }
