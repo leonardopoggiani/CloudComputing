@@ -30,20 +30,19 @@ public class MatrixMultiplication
             String[] splittedRow = value.toString().split(",");
             // [0] -> nome matrice, [1] -> numero riga (i), [2] -> numero colonna (j), [3] -> valore
             mapperKey.set(splittedRow[1] + "," + splittedRow[2]);
-            reducerKey.set(splittedRow[3]);
+            reducerKey.set(splittedRow[0] + ","  + splittedRow[3]);
 
             context.write(mapperKey, reducerKey);
         }
     }
-}
 
-public static class MatrixMultiplicationReducer extends Reducer<Text, TimeSeriesData, Text, Text> {
+    public static class MatrixMultiplicationReducer extends Reducer<Text, Text, Text, Text> {
 
-    public void reduce(final Text key, final Iterable<TimeSeriesData> values, final Context context)
-            throws IOException, InterruptedException {
+        public void reduce(final Text key, final Text values, final Context context)
+                throws IOException, InterruptedException {
 
+        }
     }
-}
 
     public static void main(final String[] args) throws Exception {
         final Configuration conf = new Configuration();
@@ -52,13 +51,13 @@ public static class MatrixMultiplicationReducer extends Reducer<Text, TimeSeries
 
         // define mapper's output key-value
         job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(TimeSeriesData.class);
+        job.setMapOutputValueClass(Text.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        job.setMapperClass(MovingAverageMapper.class);
-        job.setReducerClass(MovingAverageReducer.class);
+        job.setMapperClass(MatrixMultiplicationMapper.class);
+        job.setReducerClass(MatrixMultiplicationReducer.class);
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
