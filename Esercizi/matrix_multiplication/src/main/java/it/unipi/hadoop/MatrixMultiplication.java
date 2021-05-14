@@ -74,8 +74,8 @@ public class MatrixMultiplication
             float m_ij;
             float n_jk;
             for (int j = 0; j < NUM_COLS_M; j++) {
-                m_ij = hashA.containsKey(j) ? hashA.get(j) : 0.0f;
-                n_jk = hashB.containsKey(j) ? hashB.get(j) : 0.0f;
+                m_ij = hashA.getOrDefault(j, 0.0f);
+                n_jk = hashB.getOrDefault(j, 0.0f);
                 result += m_ij * n_jk;
             }
             if (result != 0.0f)
