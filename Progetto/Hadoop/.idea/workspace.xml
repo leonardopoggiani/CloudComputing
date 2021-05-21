@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e83f0f89-a585-42be-b879-de1b20a156d1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/it/unipi/hadoop/PageRank.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/it/unipi/hadoop/PageRankMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/it/unipi/hadoop/PageRankReducer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/hadoop/PageRank_Hadoop.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/hadoop/PageRankMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/hadoop/PageRankMapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +69,7 @@
       <option name="presentableId" value="Default" />
       <updated>1621573609159</updated>
       <workItem from="1621573611596" duration="1001000" />
-      <workItem from="1621581507172" duration="1171000" />
+      <workItem from="1621581507172" duration="2944000" />
     </task>
     <servers />
   </component>
