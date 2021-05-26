@@ -19,4 +19,4 @@ plt.grid()
 
 plt.show()
 
-    dataframe = pd.read_csv("C:\\Users\Leonardo Poggiani\\Documents\\GitHub\\covid19-opendata-vaccini\\dati\\somministrazioni-vaccini-latest.csv")
+dataframe = pd.read_csv("C:\\Users\Leonardo Poggiani\\Documents\\GitHub\\covid19-opendata-vaccini\\dati\\somministrazioni-vaccini-latest.csv")
