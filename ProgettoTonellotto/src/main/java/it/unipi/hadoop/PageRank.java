@@ -21,6 +21,7 @@ import java.util.Arrays;
 public class PageRank
 {
 
+    /*
     private static int getNumPages(Configuration conf, Path titlesDir)
             throws Exception {
 
@@ -42,6 +43,7 @@ public class PageRank
 
         return numPages;
     }
+     */
 
     public static void main(String[] args) throws Exception
     {
@@ -60,10 +62,12 @@ public class PageRank
         System.out.println("args[2]: <input>=" + otherArgs[2]);
         System.out.println("args[3]: <output>=" + otherArgs[3]);
 
+        /*
         int numPages = getNumPages(conf, input);
         conf.setLong("pagerank.num_pages", numPages);
 
         System.out.println("Pages: " + numPages);
+         */
 
         // set number of iterations
         int iterations = Integer.parseInt(otherArgs[1]);
@@ -103,10 +107,14 @@ public class PageRank
             FileInputFormat.addInputPath(job, input);
             FileOutputFormat.setOutputPath(job, output);
 
-            job.setInputFormatClass(TextInputFormat.class);
+            job.setInputFormatClass(Tex tInputFormat.class);
             job.setOutputFormatClass(TextOutputFormat.class);
 
             job.waitForCompletion(true);
+
+
+            long total_pages = job.getCounters().findCounter("totalpages_in_wiki", "totalpages_in_wiki").getValue();
+            System.out.println("Pagine: " + total_pages);
 
             //Non ho capito perchè
             fs.delete(output, true);
