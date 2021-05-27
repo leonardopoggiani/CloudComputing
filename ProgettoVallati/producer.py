@@ -5,6 +5,7 @@ import json
 import pandas as pd
 
 if __name__ == "__main__":
+
     if len(sys.argv) < 4:
         print("Usage: producer_gnocchi  <token> <id_metrica> <dati_input>", file=sys.stderr)
         sys.exit(-1)
