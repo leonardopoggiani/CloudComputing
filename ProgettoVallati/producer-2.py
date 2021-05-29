@@ -4,21 +4,33 @@ import json
 import pandas as pd
 
 if __name__ == "__main__":
+    '''
+    auth = v3.Password(auth_url='http://172.16.50.247:5000/v3',
+                       username='admin',
+                       password='openstack',
+                       project_name='admin',
+                       user_domain_id='default',
+                       project_domain_id='default')
+    sess = session.Session(auth=auth)
+    token = sess.get_token()
+    '''
 
     os.system("sh admin-openrc.sh")
     os.system("openstack token issue > output_token.txt")
     os.system("cat output_token.txt | grep \"gAAA[^[:space:]]*\" -o > token.txt")
+    metric = input("Please, insert metric ID: ")
+    file = input("Please, insert input file path: ")
 
     with open("token.txt") as token_file:
         token = token_file.readlines()
 
         str_token = token.pop().replace('\n', '')
 
-        url = "http://252.3.243.35:8041/v1/metric/c2eb7ef2-e198-4b07-a68a-a196d114f351/measures"
+        url = "http://252.3.243.35:8041/v1/metric/" + metric + "/measures"
 
         headers = {'content-type': 'application/json', 'X-AUTH-TOKEN': str_token}
 
-    df = pd.read_csv("data/csv/temperature_2017.csv")
+    df = pd.read_csv(file)
 
     rng = pd.date_range('20210528 19:00', '20210528 23:59', freq='30S')
     index = 0
@@ -38,4 +50,4 @@ if __name__ == "__main__":
         if index == len(rng):
             break
 
-    # ID METRIC 67d112e8-4d3c-4ae6-8577-0175ac48da1d
+    # ID METRIC f35014af-aaaa-4734-9def-b0ab8303ffa1
