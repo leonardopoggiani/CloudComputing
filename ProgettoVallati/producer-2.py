@@ -15,39 +15,88 @@ if __name__ == "__main__":
     token = sess.get_token()
     '''
 
-    os.system("sh admin-openrc.sh")
+    #os.system("sh admin-openrc.sh")
     os.system("openstack token issue > output_token.txt")
     os.system("cat output_token.txt | grep \"gAAA[^[:space:]]*\" -o > token.txt")
-    metric = input("Please, insert metric ID: ")
-    file = input("Please, insert input file path: ")
 
     with open("token.txt") as token_file:
         token = token_file.readlines()
-
         str_token = token.pop().replace('\n', '')
-
-        url = "http://252.3.243.35:8041/v1/metric/" + metric + "/measures"
-
         headers = {'content-type': 'application/json', 'X-AUTH-TOKEN': str_token}
+    while True:
+        print("1) Show all metrics\n"
+              "2) Show all policies\n"
+              "3) Insert a new metric\n"
+              "4) Delete a metric\n"
+              "5) Insert measures in a metric\n")
+        what = input("What do you want to do?")
 
-    df = pd.read_csv(file)
+        if int(what) == 1 or int(what) == 2:
+            if int(what) == 1:
+                finalWord = "metric"
+            else:
+                finalWord = "archive_policy"
 
-    rng = pd.date_range('20210528 19:00', '20210528 23:59', freq='30S')
-    index = 0
-    for line in df.itertuples():
-        timestamp, value = [], []
-        value.append(float(line[2]))
-        timestamp.append(str(rng.to_series()[index]))
-        index = index + 1
-        measures = [{"timestamp": t, "value": v} for t, v in zip(timestamp, value)]
-        print(measures)
-        r = requests.post(url, data=json.dumps(measures), headers=headers)
-        print(r)
-        # if str(r.status_code) == "202":
-        # print("inserted measure")
-        # else:
-        # print(str(r.status_code))
-        if index == len(rng):
-            break
+            #Lista delle policies o delle metriche
+            url = "http://252.3.243.35:8041/v1/" + finalWord
+            headers = {'X-AUTH-TOKEN': str_token}
+            r = requests.get(url, headers=headers)
+            if str(r.status_code) == "200":
+                parsed = json.loads(r.text)
+                print(json.dumps(parsed, indent=4, sort_keys=True))
+            else:
+                print(str(r.status_code))
+
+        #Creare una nuova metrica
+
+        if int(what) == 3:
+            policy = input("Insert the policy name: ")
+            url = "http://252.3.243.35:8041/v1/metric"
+            data = {"archive_policy_name": str(policy)}
+            r = requests.post(url, data=json.dumps(data), headers=headers)
+            if str(r.status_code) == "201":
+                print("Metric successfully created!")
+            else:
+                print(str(r.status_code))
+
+        #Eliminare una metrica
+
+        if int(what) == 4:
+            metric = input("Insert metric ID: ")
+            url = "http://252.3.243.35:8041/v1/metric/" + metric
+            r = requests.delete(url, headers=headers)
+            if str(r.status_code) == "204":
+                print("Metric successfully deleted!")
+            else:
+                print(r.status_code)
+
+        #Inserire misure in una metrica
+        if int(what) == 5:
+            metric = input("Insert metric ID: ")
+            file = input("Insert input file path: ")
+
+            df = pd.read_csv(file)
+
+            url = "http://252.3.243.35:8041/v1/metric/" + metric + "/measures"
+
+            rng = pd.date_range('20210531 19:00', '20210531 23:59', freq='30S')
+            index = 0
+            for line in df.itertuples():
+                timestamp, value = [], []
+                value.append(float(line[2]))
+                timestamp.append(str(rng.to_series()[index]))
+                index = index + 1
+                measures = [{"timestamp": t, "value": v} for t, v in zip(timestamp, value)]
+                r = requests.post(url, data=json.dumps(measures), headers=headers)
+                print(r)
+                if str(r.status_code) == "202":
+                    print("Measures successfully inserted!")
+                else:
+                    print(str(r.status_code))
+                if index == len(rng):
+                    break
 
     # ID METRIC f35014af-aaaa-4734-9def-b0ab8303ffa1
+
+    #Ottenere la lista delle policy
+    #curl - H "X-AUTH-TOKEN:"http: // 252.3.243.35: 8041 / v1 / archive_policy
