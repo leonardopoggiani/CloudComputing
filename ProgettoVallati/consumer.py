@@ -14,16 +14,7 @@ def print_things(parameter):
     else:
         print("Error code: " + str(r.status_code))
 
-
-if __name__ == "__main__":
-
-    commands = "1) Show all metrics\n" + \
-               "2) Show all policies\n" + \
-               "3) Insert a new metric\n" + \
-               "4) Delete a metric\n" + \
-               "5) Insert measures in a metric\n" + \
-               "6) Exit\n "
-
+def admin_openrc():
     # eseguo i comandi di admin-openrc.sh
     os.environ["OS_PROJECT_ID"] = "9009edd7c5104c628d8ed9b16bf5ec31"
     os.environ["OS_AUTH_URL"] = "http://252.3.243.14:5000/v3"
@@ -36,6 +27,17 @@ if __name__ == "__main__":
     os.environ["OS_INTERFACE"] = "public"
     os.environ["OS_IDENTITY_API_VERSION"] = "3"
 
+
+if __name__ == "__main__":
+
+    commands = "1) Show all metrics\n" + \
+               "2) Show all policies\n" + \
+               "3) Insert a new metric\n" + \
+               "4) Delete a metric\n" + \
+               "5) Insert measures in a metric\n" + \
+               "6) Exit\n "
+
+    admin_openrc()
     os.system("openstack token issue > output_token.txt")  # salva il token di accesso in file di testo
     os.system(
         "cat output_token.txt | grep \"gAAA[^[:space:]]*\" -o > token.txt")  # recupera solamente il token e lo salva su un altro file
