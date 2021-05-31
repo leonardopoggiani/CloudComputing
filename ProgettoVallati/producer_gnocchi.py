@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame()
 
-    util.print_things("archive_policy")  # stampo le policy per vedere quale inserire
+    util.print_things("archive_policy", str_token)  # stampo le policy per vedere quale inserire
 
     policy = input("\n\n Insert the policy name -> ")
 
