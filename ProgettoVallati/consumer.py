@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
             url = "http://252.3.243.35:8041/v1/metric/" + metric + "/measures"
 
-            rng = pd.date_range('20210531 19:00', '20210531 23:59', freq='30S')
+            rng = pd.date_range('20210602 19:00', '20210603 12:00', freq='30S')
             index = 0
 
             for line in df.itertuples():
