@@ -3,7 +3,6 @@ import json
 import pandas as pd
 import util
 
-
 # with this program you can choose the actions to perform with gnocchi
 if __name__ == "__main__":
 
