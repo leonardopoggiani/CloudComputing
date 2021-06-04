@@ -4,9 +4,11 @@ import pandas as pd
 import util
 
 
+# with this program you can choose the actions to perform with gnocchi
 if __name__ == "__main__":
 
-    commands = "1) Show all metrics\n" + \
+    commands = "This is the Gnocchi database interface, choose an action to perform:\n" \
+               "1) Show all metrics\n" + \
                "2) Show all policies\n" + \
                "3) Insert a new metric\n" + \
                "4) Delete a metric\n" + \
@@ -19,29 +21,23 @@ if __name__ == "__main__":
     print(str_token)
 
     while True:
-
-        # interfaccia utente
         print(commands)
         what = input("What do you want to do? -> ")
 
-        # comando inserito non valido
         if what.isnumeric() is False or int(what) > 6 or int(what) < 1:
             print("Please select a valid option ->\n\n\n" + commands)
             continue
 
+        # just print metrics or policies
         if int(what) == 1 or int(what) == 2:
             if int(what) == 1:
                 command = "metric"
             else:
                 command = "archive_policy"
-
-            # Lista delle policies o delle metriche
             util.print_things(command, str_token)
 
-        # Creare una nuova metrica
-
+        # create a new metric
         if int(what) == 3:
-
             util.print_things("archive_policy", str_token)  # stampo le policy per vedere quale inserire
 
             policy = input("\n\n Insert the policy name -> ")
@@ -53,8 +49,7 @@ if __name__ == "__main__":
             else:
                 print("Error code" + str(r.status_code))
 
-        # Eliminare una metrica
-
+        # delete a metric by ID
         if int(what) == 4:
 
             util.print_things("metric", str_token)
@@ -67,7 +62,7 @@ if __name__ == "__main__":
             else:
                 print("Error code: " + r.status_code)
 
-        # Inserire misure in una metrica
+        # insert a measure in a metric by ID
         if int(what) == 5:
 
             util.print_things("metric", str_token)
@@ -89,7 +84,6 @@ if __name__ == "__main__":
                 index = index + 1
                 measures = [{"timestamp": t, "value": v} for t, v in zip(timestamp, value)]
                 r = requests.post(url, data=json.dumps(measures), headers=headers)
-                print(r)
                 if str(r.status_code) == "202":
                     print("Measures successfully inserted!")
                 else:
@@ -101,10 +95,3 @@ if __name__ == "__main__":
         if int(what) == 6:
             print("Closing..")
             break
-
-    # ID METRIC f35014af-aaaa-4734-9def-b0ab8303ffa1
-
-    # Ottenere la lista delle policy
-    # curl - H "X-AUTH-TOKEN:"http: // 252.3.243.35: 8041 / v1 / archive_policy
-
-# ID METRIC 67d112e8-4d3c-4ae6-8577-0175ac48da1d
