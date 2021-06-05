@@ -16,8 +16,7 @@ if __name__ == "__main__":
 
     headers, str_token = util.connection()
 
-    print(headers)
-    print(str_token)
+    print("Token: " + str_token)
 
     while True:
         print(commands)
