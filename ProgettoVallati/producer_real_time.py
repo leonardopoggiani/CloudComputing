@@ -38,7 +38,7 @@ if __name__ == "__main__":
         measures = [{"timestamp": t, "value": v} for t, v in zip(timestamp, value)]
         r = requests.post(url, data=json.dumps(measures), headers=headers)
         if str(r.status_code) == "202":
-            print("current_date: " + current_date + ", value: " + float(row[2]) )
+            print("current_date: " + current_date + ", value: " + str(row[2]))
         else:
             print("Error code: " + str(r.status_code))
 
