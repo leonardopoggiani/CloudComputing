@@ -3,7 +3,7 @@ import os
 import requests
 
 
-# just print metrics or policies
+# just print metrics or policies, parameter can be "metric" or "archive_policy"
 def print_things(parameter, str_token):
     url = "http://252.3.243.35:8041/v1/" + parameter
     headers = {'X-AUTH-TOKEN': str_token}
@@ -17,7 +17,7 @@ def print_things(parameter, str_token):
 
 # executing the commands contained in the admin-openrc.sh
 def connection():
-    os.environ["OS_PROJECT_ID"] = "9009edd7c5104c628d8ed9b16bf5ec31"
+    os.environ["OS_PROJECT_ID"] = "9009edd7c5104c628d8ed9b16bf5ec31"  # this is the same of doing "export OS_PROJECT_ID = 9009edd7c5104c628d8ed9b16bf5ec31"
     os.environ["OS_AUTH_PLUGIN"] = "password"
     os.environ["OS_AUTH_URL"] = "http://252.3.243.14:5000/v3"
     os.environ["OS_PROJECT_NAME"] = "admin"
@@ -31,8 +31,8 @@ def connection():
 
     os.system("openstack token issue > output_token.txt")  # save access token in a .txt file
     os.system(
-        "cat output_token.txt |"                        # find the access token in the file
-        " grep \"gAAA[^[:space:]]*\" -o > token.txt")   # and save it in a different .txt
+        "cat output_token.txt |"  # find the access token in the file
+        " grep \"gAAA[^[:space:]]*\" -o > token.txt")  # and save it in a different .txt
 
     with open("token.txt") as token_file:
         token = token_file.readlines()
