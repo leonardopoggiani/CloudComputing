@@ -7,7 +7,7 @@ import util
 from time import sleep
 
 
-# with this program you can choose the actions to perform with gnocchi
+# with this program you can insert data periodically simulating a sensor measure
 if __name__ == "__main__":
 
     headers, str_token = util.connection()
