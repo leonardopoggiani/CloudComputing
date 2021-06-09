@@ -30,7 +30,7 @@ if __name__ == "__main__":
     how_many = 0
 
     for row in df.itertuples():
-        current_date = datetime.datetime.now()
+        current_date = datetime.datetime.now().isoformat()
         timestamp, value = [], []
         value.append(float(row[2]))
         timestamp.append(current_date)
