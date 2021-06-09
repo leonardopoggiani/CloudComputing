@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     os.system("ls data/")
     file_input = input("Insert the path of the .csv file -> ")
-    df = pd.read_csv(file_input)
+    df = pd.read_csv("data/" + file_input)
 
     threshold = input("How many data do you want to insert? (number of values) -> ")
     if int(threshold) < 0:
