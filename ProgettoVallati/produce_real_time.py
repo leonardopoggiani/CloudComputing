@@ -35,7 +35,7 @@ if __name__ == "__main__":
         value.append(float(row[2]))
         timestamp.append(current_date)
         how_many = how_many + 1
-        measures = [{"timestamp": t, "value": v} for t, v in zip(timestamp, value)]
+        measures = {"timestamp": timestamp, "value": value}
         r = requests.post(url, data=json.dumps(measures), headers=headers)
         if str(r.status_code) == "202":
             print("current_date: " + current_date + ", value: " + value)
