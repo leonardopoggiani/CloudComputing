@@ -23,7 +23,7 @@ if __name__ == "__main__":
     df = pd.read_csv(file_input)
 
     threshold = input("How many data do you want to insert? (number of values) -> ")
-    if threshold < 0:
+    if int(threshold) < 0:
         print("threshold value not valid..\n Closing..\n")
         exit(-1)
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         else:
             print("Error code" + str(r.status_code))
 
-        if how_many == threshold:
+        if how_many == int(threshold):
             break
         else:
             sleep(5)
