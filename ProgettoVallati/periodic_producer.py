@@ -38,14 +38,14 @@ if __name__ == "__main__":
         measures = [{"timestamp": t, "value": v} for t, v in zip(timestamp, value)]
         r = requests.post(url, data=json.dumps(measures), headers=headers)
         if str(r.status_code) == "202":
-            print("Measures successfully inserted!")
+            print("current_date: " + current_date)
         else:
-            print("Error code" + str(r.status_code))
+            print("Error code: " + str(r.status_code))
 
         if how_many == int(threshold):
             break
         else:
-            sleep(5)
+            sleep(2)
 
 
 
