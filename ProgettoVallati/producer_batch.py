@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import glob
 import util
-files = glob.glob("data/csv/*.csv")
+files = glob.glob("data/*.csv")
 
 
 # with this script you can insert a bunch of .csv files. They have to be in the same folder
